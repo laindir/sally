@@ -5,6 +5,7 @@ typedef unsigned char uword;
 #define SZ 256
 
 word stack[SZ];
+word rstack[SZ];
 
 void
 push(word w)
@@ -15,7 +16,25 @@ push(word w)
 word
 pop()
 {
-	return stack[(uword)stack[0]--];
+	word r = stack[(uword)stack[0]];
+	stack[(uword)stack[0]] = 0;
+	stack[0]--;
+	return r;
+}
+
+void
+rpush(word w)
+{
+	rstack[(uword)++rstack[0]] = w;
+}
+
+word
+rpop()
+{
+	word r = rstack[(uword)rstack[0]];
+	rstack[(uword)rstack[0]] = 0;
+	rstack[0]--;
+	return r;
 }
 
 void
@@ -102,6 +121,30 @@ decr(void)
 }
 
 void
+tor(void)
+{
+	rpush(pop());
+}
+
+void
+fromr(void)
+{
+	push(rpop());
+}
+
+void
+lshift(void)
+{
+	push(pop() << 1);
+}
+
+void
+rshift(void)
+{
+	push(pop() >> 1);
+}
+
+void
 print(void)
 {
 	printf("%d\n", pop());
@@ -133,6 +176,10 @@ void (*dictionary[])(void) = {
 	drop,
 	over,
 	decr,
+	tor,
+	fromr,
+	lshift,
+	rshift,
 	print,
 	printc
 };

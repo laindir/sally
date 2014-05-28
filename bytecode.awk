@@ -1,4 +1,4 @@
-function expand(s, t,n,r) {
+function expand(s, t,n,r,i) {
 	if(s in rev) {
 		return sprintf("%c", int(rev[s]));
 	} else if(s in def) {
@@ -13,7 +13,7 @@ function expand(s, t,n,r) {
 }
 
 BEGIN {
-	split("lit + xor and or invert = < swap dup drop over 1- . ,", words);
+	split("lit + xor and or invert = < swap dup drop over 1- >r r> lshift rshift . ,", words);
 	for(i in words) {
 		n++;
 		rev[words[i]] = i;
