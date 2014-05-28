@@ -1,14 +1,13 @@
-function expand(s, t,n,r,i) {
+function expand(s, t,n,i) {
 	if(s in rev) {
-		return sprintf("%c", int(rev[s]));
+		printf("%c", int(rev[s]));
 	} else if(s in def) {
 		n = split(def[s], t);
 		for(i = 1; i <= n; i++) {
-			r = r expand(t[i]);
+			expand(t[i]);
 		}
-		return r;
 	} else {
-		return sprintf("%c%c", int(rev["lit"]), int(s));
+		printf("%c%c", int(rev["lit"]), int(s));
 	}
 }
 
@@ -31,6 +30,6 @@ BEGIN {
 
 {
 	for(i = 1; i <= NF; i++) {
-		printf expand($i);
+		expand($i);
 	}
 }
