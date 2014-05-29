@@ -1,11 +1,16 @@
 #include <stdio.h>
+#include <limits.h>
 
 typedef char word;
 typedef unsigned char uword;
-#define SZ 256
+#define SZ 1 << 8
+#define MSZ 1 << 16
 
 word stack[SZ];
 word rstack[SZ];
+word mem[MSZ];
+int ip;
+int bound;
 
 void
 push(word w)
@@ -35,6 +40,12 @@ rpop()
 	rstack[(uword)rstack[0]] = 0;
 	rstack[0]--;
 	return r;
+}
+
+void
+lit(void)
+{
+	push(mem[++ip]);
 }
 
 void
@@ -161,9 +172,12 @@ enum word
 	W_LIT = 1
 };
 
+void call(void);
+void ret(void);
+
 void (*dictionary[])(void) = {
 	NULL, /*0*/
-	NULL, /*lit*/
+	lit,
 	add,
 	xor,
 	and,
@@ -180,19 +194,82 @@ void (*dictionary[])(void) = {
 	fromr,
 	lshift,
 	rshift,
+	call,
+	ret,
 	print,
 	printc
 };
+
+#define addr(h,l) ((h<<(sizeof(word)*CHAR_BIT))|(l))
+#define hi(addr) (addr>>(sizeof(word)*CHAR_BIT))
+#define lo(addr) (((1<<(sizeof(word)*CHAR_BIT))-1)&(addr))
+
+void
+call(void)
+{
+	word a = pop();
+	word b = pop();
+	word c;
+	word d;
+	if(rstack[0] >= 2)
+	{
+		c = rpop();
+		d = rpop();
+		rpush(d);
+		rpush(c);
+		if(ip != addr(c,d))
+		{
+			rpush(lo(ip));
+			rpush(hi(ip));
+		}
+	}
+	else
+	{
+		rpush(lo(ip));
+		rpush(hi(ip));
+	}
+	ip = addr(a,b);
+	while(rstack[0] && ip < bound)
+	{
+		dictionary[(uword)mem[ip]]();
+		ip++;
+	}
+}
+
+void
+ret(void)
+{
+	word a = rpop();
+	word b = rpop();
+	ip = addr(a,b);
+}
 
 int
 main(void)
 {
 	int c;
+	int immediate = 1;
 	while((c = getchar()) != EOF)
 	{
 		if(c == W_LIT && (c = getchar()) != EOF)
 		{
-			push(c);
+			if(immediate)
+			{
+				push(c);
+			}
+			else
+			{
+				mem[bound++] = W_LIT;
+				mem[bound++] = c;
+			}
+		}
+		else if(c == 0)
+		{
+			immediate = !immediate;
+		}
+		else if(!immediate)
+		{
+			mem[bound++] = c;
 		}
 		else
 		{
