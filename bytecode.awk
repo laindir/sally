@@ -39,7 +39,18 @@ BEGIN {
 {
 	if(compile) printf("%c", 0);
 	for(i = 1; i <= NF; i++) {
-		expand($i);
+		if(comment && $i == ")")
+		{
+			comment = 0;
+		}
+		else if(!comment && $i == "(")
+		{
+			comment = 1;
+		}
+		else if(!comment)
+		{
+			expand($i);
+		}
 	}
 	if(compile) printf("%c", 0);
 	compile = 0;
