@@ -9,13 +9,13 @@ function lo(n) {
 function expand(s, t,n,i) {
 	if(s in rev) {
 		printf("%c", int(rev[s]));
-		bound++;
+		if(compile) bound++;
 	} else if(s in def) {
 		printf("%c%c%c%c%c", int(rev["lit"]), int(lo(def[s])), int(rev["lit"]), int(hi(def[s])), int(rev["call"]));
-		bound += 5;
+		if(compile) bound += 5;
 	} else {
 		printf("%c%c", int(rev["lit"]), int(s));
-		bound += 2;
+		if(compile) bound += 2;
 	}
 }
 
