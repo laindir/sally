@@ -172,7 +172,7 @@ enum word
 	W_LIT = 1
 };
 
-void zbranch(void);
+void zret(void);
 void call(void);
 void ret(void);
 
@@ -195,7 +195,7 @@ void (*dictionary[])(void) = {
 	fromr,
 	lshift,
 	rshift,
-	zbranch,
+	zret,
 	call,
 	ret,
 	print,
@@ -207,14 +207,16 @@ void (*dictionary[])(void) = {
 #define lo(addr) (((1<<(sizeof(word)*CHAR_BIT))-1)&(addr))
 
 void
-zbranch(void)
+zret(void)
 {
 	word a = pop();
-	word b = pop();
-	word c = pop();
 	if(a == 0)
 	{
-		ip = addr(b,c);
+		ret();
+	}
+	else
+	{
+		push(a);
 	}
 }
 
@@ -231,7 +233,7 @@ call(void)
 		d = rpop();
 		rpush(d);
 		rpush(c);
-		if(ip != addr(c,d))
+		if(ip != addr(c,d) || dictionary[(uword)mem[ip + 1]] != ret)
 		{
 			rpush(lo(ip));
 			rpush(hi(ip));

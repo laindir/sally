@@ -20,7 +20,7 @@ function expand(s, t,n,i) {
 }
 
 BEGIN {
-	split("lit + xor and or invert = < swap dup drop over 1- >r r> lshift rshift zbranch call ret . ,", words);
+	split("lit + xor and or invert = < swap dup drop over 1- >r r> lshift rshift zret call ret . ,", words);
 	for(i in words) {
 		rev[words[i]] = i;
 	}
