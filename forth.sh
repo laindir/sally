@@ -1,1 +1,1 @@
-stdbuf -o0 awk -f bytecode.awk "$@" | ./bytecode
+stdbuf -o0 mawk -f compiler.awk "$@" | ./interpreter
