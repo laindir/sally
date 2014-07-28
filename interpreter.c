@@ -32,7 +32,7 @@ main(void)
 		}
 		else
 		{
-			dictionary[c]();
+			dictionary[c].code();
 		}
 	}
 	return 0;

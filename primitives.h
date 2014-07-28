@@ -3,53 +3,41 @@
 
 #include "arch.h"
 
-void lit(void);
-
-void add(void);
-
-void xor(void);
-
-void and(void);
-
-void or(void);
-
-void invert(void);
-
-void equ(void);
-
-void lt(void);
-
-void swap(void);
-
-void dup(void);
-
-void drop(void);
-
-void over(void);
-
-void decr(void);
-
-void tor(void);
-
-void fromr(void);
-
-void lshift(void);
-
-void rshift(void);
-
-void print(void);
-
-void printc(void);
-
 enum word
 {
-	W_LIT = 1
+	W_MODE,
+	W_LIT,
+	W_ADD,
+	W_XOR,
+	W_AND,
+	W_OR,
+	W_INVERT,
+	W_EQU,
+	W_LT,
+	W_SWAP,
+	W_DUP,
+	W_DROP,
+	W_OVER,
+	W_DECR,
+	W_TOR,
+	W_FROMR,
+	W_LSHIFT,
+	W_RSHIFT,
+	W_ZRET,
+	W_CALL,
+	W_RET,
+	W_PRINT,
+	W_PRINTC,
+	W_NUMWORDS
 };
 
-void zret(void);
-void call(void);
-void ret(void);
+struct dictentry
+{
+	enum word opcode;
+	char *text;
+	void (*code)(void);
+};
 
-void (*dictionary[23])(void);
+struct dictentry dictionary[W_NUMWORDS];
 
 #endif
